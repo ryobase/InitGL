@@ -1,5 +1,7 @@
 # InitGL
 
+My quick referrence for GLFW with C++ For a quick guide, please see https://cis.gvsu.edu/~dulimarh/Okto/cis367/
+
 ## Overview
 ### Why another guide?
 There are some great resources available online on the basics of graphics programming with OpenGL. Unfortunately, most of them assume that the reader already has all the necessary libraries and software set up beforehand. For those not familiarized with the process of setting up a portable C++ project, it can be quite confusing. I decided to create this guide in order address that issue. By the time you reach the end, you should have everything you need to successfully get started with other OpenGL tutorials.
@@ -52,6 +54,8 @@ TODO: Explain CMake variables (setting, using, ${syntax}, etc.)
 
 Now that we have our handy "source" folder path stored, we can use it while specifying the list of source files that we want to compile: `set(SOURCES "${SRC_DIR}/main.cpp")`.
 
+Next we want to use `find_package (PkgConfig REQUIRED)` and `find_package (OpenGL REQUIRED)`.
+
 TODO: Explain CMake lists
 
 The next step is to tell CMake what we want to do with our compiled source files. In this case, we want to use them to build an executable (as opposed to a library, for example). We can do this with CMake's "add_executable" command, where we specify the name to use for the executable (in this case, we're just using the project name, "InitGL") and the source files needed to build it: `add_executable(${PROJECT_NAME} ${SOURCES})`.
@@ -72,6 +76,9 @@ project(InitGL)
 # Source files
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(SOURCES "${SRC_DIR}/main.cpp")
+
+find_package (PkgConfig REQUIRED)
+find_package (OpenGL REQUIRED)
 
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -153,6 +160,10 @@ target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 ```
+
+To link libraries properly, please refer to this article (https://stackoverflow.com/questions/39598323/how-to-properly-link-libraries-with-cmake) and (https://stackoverflow.com/questions/13703647/how-to-properly-add-include-directories-with-cmake).
+
+On Windows, since I'm using CLion instead of Visual Studio. There are a few things that needs to be done. For example, DLL may be needed. This means `configure_file(${GLFW_DIR}/glfw3.dll glfw3.dll COPYONLY)` should be used.
 
 ## Loading OpenGL functions
 
@@ -284,3 +295,5 @@ int main(int argc, char* argv[]) {
 ```
 
 ## Next steps
+
+TBD
