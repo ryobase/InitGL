@@ -54,7 +54,7 @@ TODO: Explain CMake variables (setting, using, ${syntax}, etc.)
 
 Now that we have our handy "source" folder path stored, we can use it while specifying the list of source files that we want to compile: `set(SOURCES "${SRC_DIR}/main.cpp")`.
 
-Next we want to use `find_package (PkgConfig REQUIRED)` and `find_package (OpenGL REQUIRED)`.
+Next, if we want to use OpenGL directly use `find_package (PkgConfig REQUIRED)` and `find_package (OpenGL REQUIRED)`.
 
 TODO: Explain CMake lists
 
@@ -77,9 +77,6 @@ project(InitGL)
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(SOURCES "${SRC_DIR}/main.cpp")
 
-find_package (PkgConfig REQUIRED)
-find_package (OpenGL REQUIRED)
-
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
@@ -100,7 +97,7 @@ Getting a console application running is a good first step, but if we want to wo
 
 ## The window system
 
-Different APIs exist across operating systems for creating and managing windows. Once again, we don't want to have to worry about the specifics of each, so we'll use a handy library to deal with them for us. There are a number of such libraries available with varying capabilities and features. For this guide, I've decided to go with GLFW (link) due to its simplicity. If you're looking for additional features, feel free to check out SDL (link) and SFML (link).
+Different APIs exist across operating systems for creating and managing windows. Once again, we don't want to have to worry about the specifics of each, so we'll use a handy library to deal with them for us. There are a number of such libraries available with varying capabilities and features. For this guide, I've decided to go with GLFW (https://www.glfw.org/) due to its simplicity. If you're looking for additional features, feel free to check out SDL (https://www.libsdl.org/) and SFML (https://www.sfml-dev.org/).
 
 The first thing we'll need to do in order to use GLFW is to grab its source code. There are a couple ways you can do this. If you're using git, you can check out GLFW as a submodule of your repository. This is nice because it allows you to pull GLFW into your repository without having to keep around an entire duplicated copy of the GLFW source code. If you don't want to use submodules, you can always clone GLFW and manually copy it into your repository. If you don't want to use git at all, you can download a copy of the source code from (link).
 
@@ -161,7 +158,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 ```
 
-To link libraries properly, please refer to this article (https://stackoverflow.com/questions/39598323/how-to-properly-link-libraries-with-cmake) and (https://stackoverflow.com/questions/13703647/how-to-properly-add-include-directories-with-cmake).
+To link libraries properly, please refer to [this post](https://stackoverflow.com/questions/39598323/how-to-properly-link-libraries-with-cmake) and [this post](https://stackoverflow.com/questions/13703647/how-to-properly-add-include-directories-with-cmake).
 
 On Windows, since I'm using CLion instead of Visual Studio. There are a few things that needs to be done. For example, DLL may be needed. This means `configure_file(${GLFW_DIR}/glfw3.dll glfw3.dll COPYONLY)` should be used.
 
@@ -183,7 +180,9 @@ We need to let CMake know where it can find the header files it will look for wh
 
 We will also want access to those same header files from our own project: `target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")`.
 
-Finally, we'll ask CMake to link the compiled glad library to our project, along with (TODO: explain CMAKE_DL_LIBS): `target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")`.
+Finally, we'll ask CMake to link the compiled glad library to our project, along with `CMAKE_DL_LIBS` and here is what it should look like: `target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")`.
+
+`CMAKE_DL_LIBS` will include libray that contains `dlopen` and `dlclose` which is primarily use for dynamically load a library. See this [example](https://gist.github.com/tailriver/30bf0c943325330b7b6a).
 
 Here is what your CMakeLists.txt file should look like now:
 
